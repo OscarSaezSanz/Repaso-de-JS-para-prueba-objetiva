@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Dados y Partidas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e7f7e7;
+            border: 1px solid #d2e8d2;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Simulador de Dados y Partidas</h1>
+        <button onclick="nuevaPartida()">Tirar Dados</button>
+
+        <div id="resultados"></div>
+
+        <h3>Historial de Partidas:</h3>
+        <ul id="historial"></ul>
+    </div>
+
+    <script>
+        // Clase Dado que simula el lanzamiento de un dado
+        class Dado {
+            tirar() {
+                return Math.floor(Math.random() * 6) + 1;
+            }
+        }
+
+        // Clase Partida que maneja la lógica del juego entre dos jugadores
+        class Partida {
+            constructor() {
+                this.historial = [];
+            }
+
+            jugar() {
+                const dado = new Dado();
+
+                const jugador1 = dado.tirar();
+                const jugador2 = dado.tirar();
+
+                let ganador;
+                if (jugador1 > jugador2) {
+                    ganador = 'Jugador 1';
+                } else if (jugador2 > jugador1) {
+                    ganador = 'Jugador 2';
+                } else {
+                    ganador = 'Empate';
+                }
+
+                const resultado = {
+                    jugador1,
+                    jugador2,
+                    ganador
+                };
+
+                this.historial.push(resultado);
+                return resultado;
+            }
+
+            obtenerHistorial() {
+                return this.historial;
+            }
+        }
+
+        // Crear una instancia de la clase Partida
+        const partida = new Partida();
+
+        // Función para iniciar una nueva partida y mostrar los resultados
+        function nuevaPartida() {
+            const resultado = partida.jugar();
+
+            // Mostrar los resultados de la partida
+            const divResultados = document.getElementById('resultados');
+            divResultados.innerHTML = `
+                <div class="result">
+                    <p><strong>Jugador 1 tiró:</strong> ${resultado.jugador1}</p>
+                    <p><strong>Jugador 2 tiró:</strong> ${resultado.jugador2}</p>
+                    <p><strong>Ganador:</strong> ${resultado.ganador}</p>
+                </div>
+            `;
+
+            // Actualizar historial de partidas
+            mostrarHistorial();
+        }
+
+        // Función para mostrar el historial de partidas
+        function mostrarHistorial() {
+            const historialElement = document.getElementById('historial');
+            historialElement.innerHTML = '';
+
+            const historial = partida.obtenerHistorial();
+            historial.forEach((resultado, index) => {
+                const li = document.createElement('li');
+                li.textContent = `Partida ${index + 1}: Jugador 1 tiró ${resultado.jugador1}, Jugador 2 tiró ${resultado.jugador2} - Ganador: ${resultado.ganador}`;
+                historialElement.appendChild(li);
+            });
+        }
+    </script>
+
+</body>
+</html>

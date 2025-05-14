@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clase Rectángulo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e7f7e7;
+            border: 1px solid #d2e8d2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Clase Rectángulo</h1>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        // Definir la clase Rectángulo
+        class Rectangulo {
+            constructor(base, altura) {
+                this.base = base;
+                this.altura = altura;
+            }
+
+            // Método para calcular el área
+            calcularArea() {
+                return this.base * this.altura;
+            }
+
+            // Método para calcular el perímetro
+            calcularPerimetro() {
+                return 2 * (this.base + this.altura);
+            }
+
+            // Método para verificar si es un cuadrado
+            esCuadrado() {
+                return this.base === this.altura;
+            }
+        }
+
+        // Crear varios objetos de tipo Rectángulo
+        const rect1 = new Rectangulo(5, 10);
+        const rect2 = new Rectangulo(4, 4);
+        const rect3 = new Rectangulo(7, 3);
+
+        // Mostrar resultados en la página
+        const resultados = document.getElementById('results');
+
+        function mostrarResultado(rect) {
+            const div = document.createElement('div');
+            div.classList.add('result');
+            div.innerHTML = `
+                <p><strong>Rectángulo:</strong> Base = ${rect.base}, Altura = ${rect.altura}</p>
+                <p><strong>Área:</strong> ${rect.calcularArea()} unidades cuadradas</p>
+                <p><strong>Perímetro:</strong> ${rect.calcularPerimetro()} unidades</p>
+                <p><strong>¿Es un cuadrado?</strong> ${rect.esCuadrado() ? "Sí" : "No"}</p>
+            `;
+            resultados.appendChild(div);
+        }
+
+        // Mostrar los resultados de los rectángulos
+        mostrarResultado(rect1);
+        mostrarResultado(rect2);
+        mostrarResultado(rect3);
+    </script>
+
+</body>
+</html>

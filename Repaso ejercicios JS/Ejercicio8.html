@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clase Coche</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e7f7e7;
+            border: 1px solid #d2e8d2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Clase Coche</h1>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        // Definir la clase Coche
+        class Coche {
+            constructor(marca, modelo) {
+                this.marca = marca;
+                this.modelo = modelo;
+                this.velocidad = 0; // Velocidad inicial es 0
+                this.encendido = false; // El coche comienza apagado
+            }
+
+            // Método para arrancar el coche
+            arrancar() {
+                if (!this.encendido) {
+                    this.encendido = true;
+                    console.log(`El coche ${this.marca} ${this.modelo} ha arrancado.`);
+                } else {
+                    console.log(`El coche ya está encendido.`);
+                }
+            }
+
+            // Método para detener el coche
+            detener() {
+                if (this.encendido) {
+                    this.encendido = false;
+                    this.velocidad = 0;
+                    console.log(`El coche ${this.marca} ${this.modelo} se ha detenido.`);
+                } else {
+                    console.log(`El coche ya está apagado.`);
+                }
+            }
+
+            // Método para acelerar
+            acelerar() {
+                if (this.encendido) {
+                    this.velocidad += 10;
+                    console.log(`El coche ${this.marca} ${this.modelo} ha acelerado. Velocidad actual: ${this.velocidad} km/h.`);
+                } else {
+                    console.log(`El coche está apagado. Primero, arranca el coche.`);
+                }
+            }
+
+            // Método para frenar
+            frenar() {
+                if (this.encendido && this.velocidad > 0) {
+                    this.velocidad -= 10;
+                    console.log(`El coche ${this.marca} ${this.modelo} ha frenado. Velocidad actual: ${this.velocidad} km/h.`);
+                } else if (this.velocidad === 0) {
+                    console.log(`El coche ya está detenido.`);
+                } else {
+                    console.log(`El coche está apagado. Primero, arranca el coche.`);
+                }
+            }
+        }
+
+        // Crear varios objetos de tipo Coche
+        const coche1 = new Coche("Toyota", "Corolla");
+        const coche2 = new Coche("Honda", "Civic");
+
+        // Mostrar resultados de las operaciones en la página
+        const resultados = document.getElementById('results');
+
+        function mostrarResultado(coche) {
+            const div = document.createElement('div');
+            div.classList.add('result');
+            div.innerHTML = `
+                <p><strong>Coche:</strong> Marca: ${coche.marca}, Modelo: ${coche.modelo}</p>
+                <button onclick="coche.arrancar()">Arrancar</button>
+                <button onclick="coche.acelerar()">Acelerar</button>
+                <button onclick="coche.frenar()">Frenar</button>
+                <button onclick="coche.detener()">Detener</button>
+            `;
+            resultados.appendChild(div);
+        }
+
+        // Mostrar los resultados de los coches
+        mostrarResultado(coche1);
+        mostrarResultado(coche2);
+    </script>
+
+</body>
+</html>

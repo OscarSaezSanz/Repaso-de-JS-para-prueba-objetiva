@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cajero Automático</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Cajero Automático</h1>
+        
+        <label for="accountNumber">Número de Cuenta:</label>
+        <input type="text" id="accountNumber" placeholder="Número de cuenta">
+        
+        <label for="pin">PIN:</label>
+        <input type="password" id="pin" placeholder="PIN">
+        
+        <button onclick="login()">Iniciar sesión</button>
+
+        <div id="operations" style="display:none;">
+            <h3>Operaciones</h3>
+            <button onclick="consultarSaldo()">Consultar Saldo</button>
+            <button onclick="ingresarDinero()">Ingresar Dinero</button>
+            <button onclick="retirarDinero()">Retirar Dinero</button>
+            <button onclick="logout()">Cerrar sesión</button>
+            
+            <h3>Historial de Operaciones:</h3>
+            <ul id="operationHistory"></ul>
+        </div>
+
+        <p id="errorMessage" style="color:red;"></p>
+    </div>
+
+    <script>
+        // Definir las cuentas con PIN, saldo y historial de operaciones
+        const cuentas = {
+            '12345': { pin: '1234', saldo: 500, intentosFallidos: 0, historial: [] },
+            '67890': { pin: '5678', saldo: 1000, intentosFallidos: 0, historial: [] }
+        };
+
+        let cuentaActual = null;
+
+        // Función para iniciar sesión
+        function login() {
+            const numeroCuenta = document.getElementById('accountNumber').value;
+            const pin = document.getElementById('pin').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (numeroCuenta in cuentas) {
+                const cuenta = cuentas[numeroCuenta];
+                if (cuenta.intentosFallidos >= 3) {
+                    errorMessage.textContent = 'Cuenta bloqueada debido a múltiples intentos fallidos.';
+                    return;
+                }
+
+                if (cuenta.pin === pin) {
+                    cuentaActual = cuenta;
+                    cuenta.intentosFallidos = 0;
+                    mostrarOperaciones();
+                    errorMessage.textContent = '';
+                } else {
+                    cuenta.intentosFallidos++;
+                    errorMessage.textContent = `PIN incorrecto. Intentos restantes: ${3 - cuenta.intentosFallidos}`;
+                }
+            } else {
+                errorMessage.textContent = 'Número de cuenta no encontrado.';
+            }
+        }
+
+        // Mostrar opciones de operación después de iniciar sesión
+        function mostrarOperaciones() {
+            document.getElementById('operations').style.display = 'block';
+        }
+
+        // Función para consultar saldo
+        function consultarSaldo() {
+            alert(`Tu saldo es: $${cuentaActual.saldo}`);
+            registrarHistorial('Consulta de saldo');
+        }
+
+        // Función para ingresar dinero
+        function ingresarDinero() {
+            const cantidad = parseFloat(prompt("¿Cuánto deseas ingresar?"));
+            if (cantidad > 0) {
+                cuentaActual.saldo += cantidad;
+                alert(`Has ingresado $${cantidad}. Nuevo saldo: $${cuentaActual.saldo}`);
+                registrarHistorial(`Ingreso de $${cantidad}`);
+            } else {
+                alert("Cantidad no válida.");
+            }
+        }
+
+        // Función para retirar dinero
+        function retirarDinero() {
+            const cantidad = parseFloat(prompt("¿Cuánto deseas retirar?"));
+            if (cantidad > 0 && cantidad <= cuentaActual.saldo) {
+                cuentaActual.saldo -= cantidad;
+                alert(`Has retirado $${cantidad}. Nuevo saldo: $${cuentaActual.saldo}`);
+                registrarHistorial(`Retiro de $${cantidad}`);
+            } else {
+                alert("Saldo insuficiente o cantidad no válida.");
+            }
+        }
+
+        // Función para registrar el historial de operaciones
+        function registrarHistorial(operacion) {
+            cuentaActual.historial.push(operacion);
+            mostrarHistorial();
+        }
+
+        // Función para mostrar el historial de operaciones
+        function mostrarHistorial() {
+            const historialElement = document.getElementById('operationHistory');
+            historialElement.innerHTML = '';
+            cuentaActual.historial.forEach(op => {
+                const li = document.createElement('li');
+                li.textContent = op;
+                historialElement.appendChild(li);
+            });
+        }
+
+        // Función para cerrar sesión
+        function logout() {
+            cuentaActual = null;
+            document.getElementById('operations').style.display = 'none';
+            document.getElementById('accountNumber').value = '';
+            document.getElementById('pin').value = '';
+        }
+    </script>
+
+</body>
+</html>

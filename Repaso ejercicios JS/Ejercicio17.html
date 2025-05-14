@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Online</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .product, .cart-item {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .cart-summary {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e7f7e7;
+            border: 1px solid #d2e8d2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Tienda Online</h1>
+
+        <h3>Productos disponibles:</h3>
+        <div id="products"></div>
+
+        <h3>Carrito de Compras:</h3>
+        <div id="cart"></div>
+
+        <div class="cart-summary" id="cart-summary">
+            <p>Total: $<span id="total">0</span></p>
+            <button onclick="confirmarCompra()">Confirmar Compra</button>
+        </div>
+    </div>
+
+    <script>
+        // Definir las categorías de productos con descuentos
+        const categorias = {
+            'Electrónica': 0.10, // 10% de descuento
+            'Ropa': 0.15, // 15% de descuento
+            'Juguetes': 0, // Sin descuento
+        };
+
+        // Crear una clase Producto
+        class Producto {
+            constructor(id, nombre, precio, categoria, stock) {
+                this.id = id;
+                this.nombre = nombre;
+                this.precio = precio;
+                this.categoria = categoria;
+                this.stock = stock;
+            }
+
+            // Aplicar descuento al precio del producto
+            obtenerPrecioConDescuento() {
+                return this.precio * (1 - categorias[this.categoria]);
+            }
+        }
+
+        // Crear una clase Carrito
+        class Carrito {
+            constructor() {
+                this.items = [];
+            }
+
+            // Añadir un producto al carrito
+            agregarProducto(producto) {
+                if (producto.stock > 0) {
+                    this.items.push(producto);
+                    producto.stock -= 1;
+                    this.mostrarCarrito();
+                } else {
+                    alert(`El producto ${producto.nombre} está fuera de stock.`);
+                }
+            }
+
+            // Eliminar un producto del carrito
+            eliminarProducto(id) {
+                const index = this.items.findIndex(item => item.id === id);
+                if (index !== -1) {
+                    const producto = this.items.splice(index, 1)[0];
+                    producto.stock += 1; // Restablecer el stock
+                    this.mostrarCarrito();
+                }
+            }
+
+            // Calcular el total del carrito
+            calcularTotal() {
+                return this.items.reduce((total, item) => {
+                    return total + item.obtenerPrecioConDescuento();
+                }, 0);
+            }
+
+            // Mostrar el carrito
+            mostrarCarrito() {
+                const cartElement = document.getElementById('cart');
+                const totalElement = document.getElementById('total');
+                cartElement.innerHTML = ''; // Limpiar el carrito
+
+                this.items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.classList.add('cart-item');
+                    div.innerHTML = `
+                        <p>${item.nombre} - $${item.obtenerPrecioConDescuento().toFixed(2)}</p>
+                        <button onclick="carrito.eliminarProducto(${item.id})">Eliminar</button>
+                    `;
+                    cartElement.appendChild(div);
+                });
+
+                totalElement.textContent = this.calcularTotal().toFixed(2);
+            }
+        }
+
+        // Crear los productos
+        const productos = [
+            new Producto(1, 'Smartphone', 500, 'Electrónica', 10),
+            new Producto(2, 'Camiseta', 20, 'Ropa', 15),
+            new Producto(3, 'Muñeca', 15, 'Juguetes', 5),
+            new Producto(4, 'Laptop', 800, 'Electrónica', 8),
+            new Producto(5, 'Pantalones', 40, 'Ropa', 10),
+        ];
+
+        // Crear un carrito de compras
+        const carrito = new Carrito();
+
+        // Mostrar los productos en la tienda
+        function mostrarProductos() {
+            const productosElement = document.getElementById('products');
+            productos.forEach(producto => {
+                const div = document.createElement('div');
+                div.classList.add('product');
+                div.innerHTML = `
+                    <p><strong>${producto.nombre}</strong> - $${producto.obtenerPrecioConDescuento().toFixed(2)}</p>
+                    <p>Categoría: ${producto.categoria}</p>
+                    <p>Stock disponible: ${producto.stock}</p>
+                    <button onclick="carrito.agregarProducto(productos[${productos.indexOf(producto)}])">Añadir al carrito</button>
+                `;
+                productosElement.appendChild(div);
+            });
+        }
+
+        // Confirmar la compra
+        function confirmarCompra() {
+            alert(`Gracias por su compra. Total: $${carrito.calcularTotal().toFixed(2)}`);
+            carrito.items = []; // Limpiar el carrito
+            carrito.mostrarCarrito(); // Actualizar el carrito
+        }
+
+        // Inicializar la tienda
+        mostrarProductos();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor Multifuncional</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Conversor Multifuncional</h1>
+        <p>Seleccione la opción de conversión que desea realizar:</p>
+        
+        <select id="conversionType">
+            <option value="temperatura">Temperatura (Fahrenheit a Celsius)</option>
+            <option value="longitud">Longitud (metros a millas)</option>
+            <option value="peso">Peso (kilogramos a gramos)</option>
+        </select>
+        
+        <input type="number" id="valueInput" placeholder="Introduce el valor a convertir">
+        
+        <button onclick="realizarConversion()">Convertir</button>
+
+        <p id="result"></p>
+    </div>
+
+    <script>
+        // Función para convertir de Fahrenheit a Celsius
+        function convertirTemperatura(fahrenheit) {
+            return (fahrenheit - 32) * 5/9;
+        }
+
+        // Función para convertir de metros a millas
+        function convertirLongitud(metros) {
+            return metros * 0.000621371;
+        }
+
+        // Función para convertir de kilogramos a gramos
+        function convertirPeso(kilogramos) {
+            return kilogramos * 1000;
+        }
+
+        // Función para manejar la conversión según la opción seleccionada
+        function realizarConversion() {
+            const tipoConversion = document.getElementById("conversionType").value;
+            const valor = parseFloat(document.getElementById("valueInput").value);
+            const resultElement = document.getElementById("result");
+
+            if (isNaN(valor)) {
+                resultElement.textContent = "Por favor, ingresa un valor válido.";
+                return;
+            }
+
+            let resultado;
+            switch (tipoConversion) {
+                case "temperatura":
+                    resultado = convertirTemperatura(valor);
+                    resultElement.textContent = `${valor} grados Fahrenheit equivalen a ${resultado.toFixed(2)} grados Celsius.`;
+                    break;
+                case "longitud":
+                    resultado = convertirLongitud(valor);
+                    resultElement.textContent = `${valor} metros equivalen a ${resultado.toFixed(6)} millas.`;
+                    break;
+                case "peso":
+                    resultado = convertirPeso(valor);
+                    resultElement.textContent = `${valor} kilogramos equivalen a ${resultado} gramos.`;
+                    break;
+                default:
+                    resultElement.textContent = "Por favor, selecciona una opción válida.";
+            }
+        }
+    </script>
+
+</body>
+</html>
